@@ -23,3 +23,7 @@ plan
 spacing
 signs
 rating
+mask
+covid 19
+sick
+pandemic
