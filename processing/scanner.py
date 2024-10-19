@@ -3,6 +3,7 @@ import csv
 import os
 
 from sql import sql
+from cleaner import cleaner
 
 # directory check
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,8 +41,8 @@ with open(csv_name, 'r') as input:
             date, 
             point_name, 
             qualifier_text, 
-            risk_notes, 
-            risk_follow_up if risk_follow_up else None
+            cleaner.clean(risk_notes), 
+            cleaner.clean(risk_follow_up) if risk_follow_up else None
         ))
 
 con.commit()
