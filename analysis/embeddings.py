@@ -1,3 +1,4 @@
+from sentence_transformers import SentenceTransformer
 from transformers import AutoModel
 import faiss
 import os
@@ -10,13 +11,15 @@ import sqlite3
 
 # which columns are we running the analysis on?
 # names must match a .txt file in ../data/keywords
-attrs = ['low', 'medium', 'high']
+#attrs = ['low', 'medium', 'high']
+#attrs = ['traffic', 'fire', 'electrical', 'fall']
+attrs = ['ppe', 'documentation', 'equipment']
 
 # are we running on the entire dataset?
 entire_dataset = False
 
 # if we're not running everything, how many descriptions are we running
-n_descriptions = 40
+n_descriptions = 100
 
 #endregion
 
@@ -39,7 +42,8 @@ cursor = con.cursor()
 for attr in attrs: sql.add_score(cursor, attr)
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-model = AutoModel.from_pretrained('jinaai/jina-embeddings-v3', trust_remote_code=True)
+model = SentenceTransformer("jxm/cde-small-v1", trust_remote_code=True)
+#model = AutoModel.from_pretrained('jinaai/jina-embeddings-v3', trust_remote_code=True)
 
 descriptions = fetcher.get_descriptions(cursor)
 
@@ -54,7 +58,8 @@ for attr in attrs:
     
     with open(file_path, 'r') as input:
         phrases = input.read().lower().split("\n")
-        embeddings = model.encode(phrases, task='classification')
+        #embeddings = model.encode(phrases, task='classification')
+        embeddings = model.encode(phrases, convert_to_tensor=True)
         dimension = embeddings.shape[1]
         index = faiss.IndexFlatL2(dimension)
         index.add(embeddings)
