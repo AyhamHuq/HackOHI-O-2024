@@ -1,0 +1,15 @@
+equipment
+broken
+worn out
+out of use
+unusable
+blade
+machine
+engine
+excavator
+rotor
+voltage
+power
+electricity
+shut off
+faulty
