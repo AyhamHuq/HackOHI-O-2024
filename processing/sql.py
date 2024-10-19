@@ -12,7 +12,25 @@ class sql:
         Risk_follow_up TEXT,
         PRIMARY KEY ({_primary_key[0]}, {_primary_key[1]})
     );'''
+
+    add_scores = f'''ALTER TABLE {_table_name}
+                    ADD COLUMN IF NOT EXISTS low TEXT,
+                    ADD COLUMN IF NOT EXISTS medium TEXT,
+                    ADD COLUMN IF NOT EXISTS high TEXT;
+                    '''
     
     insert_sql = f'INSERT INTO {_table_name} VALUES (?, ?, ?, ?, ?, ?)'
+
+    update_low = f'''UPDATE {_table_name}
+    SET low = ?
+    WHERE {_primary_key[0]} = ? AND {_primary_key[1]} = ?;'''
+    
+    update_med = f'''UPDATE {_table_name}
+    SET med = ?
+    WHERE {_primary_key[0]} = ? AND {_primary_key[1]} = ?;'''
+    
+    update_high = f'''UPDATE {_table_name}
+    SET high = ?
+    WHERE {_primary_key[0]} = ? AND {_primary_key[1]} = ?;'''
 
     delete_sql = f'DELETE FROM {_table_name}'

@@ -1,9 +1,13 @@
 from transformers import AutoModel
 import faiss
 import os
+import sys
 import time
-
 from fetcher import fetcher
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(current_dir, "../processing"))
+from sql import sql
+sql.add_scores()
 
 data_folder = '../data/keywords'
 
@@ -23,7 +27,11 @@ for file in os.listdir(data_folder):
 
     file_path = os.path.join(data_folder, file)
     
+    i = 0
     with open(file_path, 'r') as input:
+        if i < 20:
+            break
+        i += 1
         phrases = input.read().lower().split("\n")
         embeddings = model.encode(phrases, task='classification')
         dimension = embeddings.shape[1]
@@ -35,5 +43,11 @@ for file in os.listdir(data_folder):
             D, I = index.search(embedding.reshape(1, -1), k=1)
 
             # D[0][0] to get distance, phrases[I[0][0]] to get matched phrase
+
+            
+            if "low" in file_path: print(D[0][0])#sql.update_low_sql(D[0][0])
+            elif "medium" in file_path: print(D[0][0]) #sql.update_med_sql(D[0][0])
+            elif "high" in file_path: print(D[0][0])#sql.update_high_sql(D[0][0])
+
 
     print(f'took {time.time() - t} seconds\n')
