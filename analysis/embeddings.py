@@ -16,7 +16,7 @@ attrs = ['low', 'medium', 'high']
 entire_dataset = False
 
 # if we're not running everything, how many descriptions are we running
-n_descriptions = 30
+n_descriptions = 40
 
 #endregion
 
@@ -43,9 +43,12 @@ model = AutoModel.from_pretrained('jinaai/jina-embeddings-v3', trust_remote_code
 
 descriptions = fetcher.get_descriptions(cursor)
 
-# for file in os.listdir(data_folder):
+denormalized: dict[str, list[tuple[float, str, str]]] = {}
+
 for attr in attrs:
     t = time.time()
+
+    denormalized[attr] = []
 
     file_path = os.path.join(data_folder, f'{attr}.txt')
     
@@ -62,10 +65,22 @@ for attr in attrs:
             description_embedding = model.encode(desc.text)
             D, I = index.search(description_embedding.reshape(1, -1), k=1)
 
-            cursor.execute(sql.update_score(attr), (float(D[0][0]), desc.pk1, desc.pk2))
+            denormalized[attr].append((float(D[0][0]), desc.pk1, desc.pk2))
 
     print(f'{attr} took {time.time() - t} seconds')
 
+lists: list[list[tuple[float, str, str]]] = list(denormalized.values())
+
+update_commands = [sql.update_score(attr) for attr in attrs]
+
+for t in zip(*lists):
+    total = sum(inner_tuple[0] for inner_tuple in t)
+
+    for (command, inner_tuple) in zip(update_commands, t):
+        denorm, pk1, pk2 = inner_tuple
+        normalized = denorm / total
+        cursor.execute(command, (normalized, pk1, pk2))
+    
 con.commit()
 con.close()
 
