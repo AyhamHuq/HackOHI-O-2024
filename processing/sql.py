@@ -29,7 +29,7 @@ class sql:
         columns = [row[1] for row in cursor.fetchall()]
     
         if attr_name not in columns:
-            cursor.execute(f"ALTER TABLE {sql.table_name} ADD COLUMN {attr_name} TEXT;")
+            cursor.execute(f"ALTER TABLE {sql.table_name} ADD COLUMN {attr_name} REAL;")
     
 
     insert_sql = f'INSERT INTO {table_name} VALUES (?, ?, ?, ?, ?, ?)'
