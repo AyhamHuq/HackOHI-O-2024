@@ -11,18 +11,14 @@ from sql import sql
 data = namedtuple('data', ['pk1', 'pk2', 'text'])
 
 class fetcher:
-    def get_descriptions() -> list[data]:
+    def get_descriptions(cursor:sqlite3.Cursor) -> list[data]:
         l = []
-
-        con = sqlite3.connect(sql.db_name)
-        cursor = con.cursor()
 
         cursor.execute(sql.retrieve_sql)
 
         for row in cursor.fetchall():
             (
                 observation_no, 
-                _, 
                 point_name, 
                 qualifier_text, 
                 risk_notes, 

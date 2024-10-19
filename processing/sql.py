@@ -1,3 +1,5 @@
+import sqlite3
+
 class sql:
     db_name = '../data/data.db'
     table_name = 'data'
@@ -22,26 +24,28 @@ class sql:
         PRIMARY KEY ({_primary_key[0]}, {_primary_key[1]})
     );'''
 
-    add_scores = f'''ALTER TABLE {_table_name}
-                    ADD COLUMN IF NOT EXISTS low TEXT,
-                    ADD COLUMN IF NOT EXISTS medium TEXT,
-                    ADD COLUMN IF NOT EXISTS high TEXT;
-                    '''
+    def add_score(cursor: sqlite3.Cursor, attr_name: str) -> str: 
+        cursor.execute(f"PRAGMA table_info({sql.table_name});")
+        columns = [row[1] for row in cursor.fetchall()]
     
+        if attr_name not in columns:
+            cursor.execute(f"ALTER TABLE {sql.table_name} ADD COLUMN {attr_name} TEXT;")
+    
+
     insert_sql = f'INSERT INTO {table_name} VALUES (?, ?, ?, ?, ?, ?)'
 
-    update_low = f'''UPDATE {_table_name}
-    SET low = ?
-    WHERE {_primary_key[0]} = ? AND {_primary_key[1]} = ?;'''
+    def update_score(attr_name: str) -> str:
+        return f'''UPDATE {sql.table_name}
+        SET {attr_name} = ?
+        WHERE {sql._primary_key[0]} = ? AND {sql._primary_key[1]} = ?;'''
     
-    update_med = f'''UPDATE {_table_name}
-    SET med = ?
-    WHERE {_primary_key[0]} = ? AND {_primary_key[1]} = ?;'''
-    
-    update_high = f'''UPDATE {_table_name}
-    SET high = ?
-    WHERE {_primary_key[0]} = ? AND {_primary_key[1]} = ?;'''
 
     delete_sql = f'DELETE FROM {table_name}'
 
-    retrieve_sql = f'SELECT * FROM {table_name}'
+    retrieve_sql = f'''SELECT
+        {_attribute_names[0]}, 
+        {_attribute_names[2]}, 
+        {_attribute_names[3]}, 
+        {_attribute_names[4]}, 
+        {_attribute_names[5]} 
+    FROM {table_name}'''
