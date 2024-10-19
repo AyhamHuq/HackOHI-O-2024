@@ -1,18 +1,29 @@
 class sql:
     db_name = '../data/data.db'
-    _table_name = 'data'
-    _primary_key = 'Observation_no', 'Point_name'
+    table_name = 'data'
 
-    create_sql = f'''CREATE TABLE IF NOT EXISTS {_table_name} (
-        {_primary_key[0]} INT,
-        Date DATETIME,
-        {_primary_key[1]} TEXT,
-        Qualifier_text TEXT,
-        Risk_notes TEXT,
-        Risk_follow_up TEXT,
+    _attribute_names = [
+        'Observation_no',
+        'Date',
+        'Point_name',
+        'Qualifier_text',
+        'Risk_notes',
+        'Risk_follow_up'
+    ]
+    _primary_key = _attribute_names[0], _attribute_names[2]
+
+    create_sql = f'''CREATE TABLE IF NOT EXISTS {table_name} (
+        {_attribute_names[0]} INT,
+        {_attribute_names[1]} DATETIME,
+        {_attribute_names[2]} TEXT,
+        {_attribute_names[3]} TEXT,
+        {_attribute_names[4]} TEXT,
+        {_attribute_names[5]} TEXT,
         PRIMARY KEY ({_primary_key[0]}, {_primary_key[1]})
     );'''
     
-    insert_sql = f'INSERT INTO {_table_name} VALUES (?, ?, ?, ?, ?, ?)'
+    insert_sql = f'INSERT INTO {table_name} VALUES (?, ?, ?, ?, ?, ?)'
 
-    delete_sql = f'DELETE FROM {_table_name}'
+    delete_sql = f'DELETE FROM {table_name}'
+
+    retrieve_sql = f'SELECT * FROM {table_name}'
