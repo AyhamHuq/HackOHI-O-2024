@@ -34,7 +34,7 @@ const App = () => {
 
 const submit = async (description) => {
   console.log('Submitting:', description);
-  const response = await fetch('http://10.2.2:5000/get_risk', { 
+  const response = await fetch('http://172.27.127.36:5000/get_risk', { 
     method: 'POST', 
     headers: {'content-type': 'application/json'}, 
     body: JSON.stringify({ description }) 
