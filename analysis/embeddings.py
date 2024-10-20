@@ -29,7 +29,7 @@ class embeddings:
         con = sqlite3.connect(sql.db_name)
         cursor = con.cursor()
 
-        for attr in attrs: sql.add_score(cursor, attr)
+        for attr in attrs: sql.add_column(cursor, attr, 'REAL')
 
         if os.name == 'posix': os.environ['TOKENIZERS_PARALLELISM'] = 'FALSE'
         os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
@@ -69,7 +69,7 @@ class embeddings:
 
         lists: list[list[tuple[float, str, str]]] = list(denormalized.values())
 
-        update_commands = [sql.update_score(attr) for attr in attrs]
+        update_commands = [sql.update_column(attr) for attr in attrs]
 
         for t in zip(*lists):
             total = sum(inner_tuple[0] for inner_tuple in t)
