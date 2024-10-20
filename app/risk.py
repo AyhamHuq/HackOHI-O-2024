@@ -6,15 +6,13 @@ import numpy as np
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(current_dir, '../analysis'))
-
 from fetcher import fetcher
 
-def get_risk(desc: str) -> str:
+def get_risk(desc: str, model) -> str:
     attrs = ['low', 'medium', 'high']
 
     filtered_desc = fetcher.filter_stop_words(desc)
 
-    model = SentenceTransformer("jxm/cde-small-v1", trust_remote_code=True)
     os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
     denormalized = []
