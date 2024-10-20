@@ -34,19 +34,20 @@ const App = () => {
 
 const submit = async (description) => {
   console.log('Submitting:', description);
-  const response = await fetch('http://172.27.127.36:5000/get_risk', { 
+  const response = await fetch('http://172.20.10.13:5000/get_risk', {
     method: 'POST', 
     headers: {'content-type': 'application/json'}, 
     body: JSON.stringify({ description }) 
   });
 
   if (!response.ok) {
+    console.error('Network response was not ok');
     throw new Error('Network response was not ok');
   }
 
+  const data = await response.json();
   console.log('Received:', data);
 
-  const data = await response.json();
   return data.risk;
 };
 
