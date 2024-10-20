@@ -3,12 +3,15 @@ import csv
 import os
 
 from sql import sql
-from cleaner import cleaner
 
 # directory check
 script_dir = os.path.dirname(os.path.abspath(__file__))
 current_dir = os.getcwd()
 assert current_dir == script_dir, (f"script must be run from {script_dir}")
+
+def clean(text: str) -> str:
+    # TODO: clean?
+    return text
 
 csv_name = '../data/input.csv'
 
@@ -41,8 +44,8 @@ with open(csv_name, 'r') as input:
             date, 
             point_name, 
             qualifier_text, 
-            cleaner.clean(risk_notes), 
-            cleaner.clean(risk_follow_up) if risk_follow_up else None
+            clean(risk_notes), 
+            clean(risk_follow_up) if risk_follow_up else None
         ))
 
 con.commit()

@@ -9,7 +9,7 @@ hazard = ['traffic', 'fire', 'electrical', 'fall']
 parser = argparse.ArgumentParser()
 parser.add_argument('--risk', '-r', action='store_true')
 parser.add_argument('--observation', '-o', action='store_true')
-parser.add_argument('--hazard', '-h', action='store_true')
+parser.add_argument('--hazard', '-z', action='store_true')
 parser.add_argument('--all', '-a', action='store_true')
 parser.add_argument('--count', '-n', type=int, default=-1)
 args = parser.parse_args()

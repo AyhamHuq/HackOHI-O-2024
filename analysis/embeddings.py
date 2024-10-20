@@ -25,7 +25,7 @@ class embeddings:
         con = sqlite3.connect(sql.db_name)
         cursor = con.cursor()
 
-        for attr in attrs: sql.add_score(cursor, attr)
+        for attr in attrs: sql.add_column(cursor, attr, 'REAL')
 
         if os.name == 'posix': os.environ['TOKENIZERS_PARALLELISM'] = 'FALSE'
         os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
@@ -51,10 +51,7 @@ class embeddings:
                 
                 ds = [d.text for d in descriptions]
                 selected_ds = ds if n_descriptions == RUN_ALL else ds[:n_descriptions]
-                
-                x = time.time()
                 description_embeddings = model.encode(selected_ds)
-                print(time.time() - x)
 
                 for desc, emb in zip(descriptions, description_embeddings):
                     D, _ = index.search(emb.reshape(1, -1), k=1)
@@ -64,7 +61,7 @@ class embeddings:
 
         lists: list[list[tuple[float, str, str]]] = list(denormalized.values())
 
-        update_commands = [sql.update_score(attr) for attr in attrs]
+        update_commands = [sql.update_column(attr) for attr in attrs]
 
         for t in zip(*lists):
             total = sum(inner_tuple[0] for inner_tuple in t)
