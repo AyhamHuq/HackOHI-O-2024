@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 import risk
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app) 
 
 @app.route('/get_risk', methods=['POST'])
 def get_risk():
