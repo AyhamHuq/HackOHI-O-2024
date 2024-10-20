@@ -5,7 +5,7 @@ import os
 import sys
 import time
 import sqlite3
-
+import numpy as np
 from fetcher import fetcher
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,8 +14,11 @@ from sql import sql
 
 RUN_ALL = -1
 N_ROWS = 20000
+model = SentenceTransformer("jxm/cde-small-v1", trust_remote_code=True)
+
 
 class embeddings:
+
     def analyze(attrs: list[str], n_descriptions: int):
         if (n_descriptions > N_ROWS): n_descriptions = RUN_ALL
     
@@ -30,8 +33,7 @@ class embeddings:
 
         if os.name == 'posix': os.environ['TOKENIZERS_PARALLELISM'] = 'FALSE'
         os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-        model = SentenceTransformer("jxm/cde-small-v1", trust_remote_code=True)
-#model = AutoModel.from_pretrained('jinaai/jina-embeddings-v3', trust_remote_code=True)
+        #model = AutoModel.from_pretrained('jinaai/jina-embeddings-v3', trust_remote_code=True)
 
         descriptions = fetcher.get_descriptions(cursor)
 
@@ -48,9 +50,12 @@ class embeddings:
                 phrases = input.read().lower().split("\n")
                 #embeddings = model.encode(phrases, task='classification')
                 embeddings = model.encode(phrases, convert_to_tensor=True)
-        dimension = embeddings.shape[1]
+                dimension = embeddings.shape[1]
                 index = faiss.IndexFlatL2(dimension)
-                index.add(embeddings)
+                embeddings_cpu = embeddings.cpu().detach().numpy()
+
+                # Add the embeddings to the FAISS index
+                index.add(np.ascontiguousarray(embeddings_cpu, dtype='float32'))
                 
                 ds = [d.text for d in descriptions]
                 selected_ds = ds if n_descriptions == RUN_ALL else ds[:n_descriptions]
