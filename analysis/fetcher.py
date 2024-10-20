@@ -5,7 +5,6 @@ from collections import namedtuple
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-nltk.download('wordnet')
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
