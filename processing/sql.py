@@ -51,7 +51,7 @@ class sql:
         SET {attr_name} = ?
         WHERE {sql._primary_key[0]} = ? AND {sql._primary_key[1]} = ?;'''
     
-    delete_sql = f'DELETE FROM {table_name}'
+    delete_sql = f'DROP TABLE {table_name};'
 
     retrieve_sql = f'''SELECT
         {_attribute_names[0]}, 

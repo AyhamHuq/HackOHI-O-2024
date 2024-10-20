@@ -13,15 +13,22 @@ def clean(text: str) -> str:
     # TODO: clean?
     return text
 
+def clean_date(date: str) -> str:
+    parts = date.split(' ')[0].split('/')
+    y = int(parts[2])
+    m = int(parts[0])
+    d = int(parts[1])
+    return f'{y}-{m:02}-{d:02}'
+
 csv_name = '../data/input.csv'
 
 con = sqlite3.connect(sql.db_name)
 cursor = con.cursor()
 
-cursor.execute(sql.create_sql)
-
 # remove all data from table
 cursor.execute(sql.delete_sql)
+
+cursor.execute(sql.create_sql)
 
 with open(csv_name, 'r') as input:
     reader = csv.reader(input)
@@ -41,7 +48,7 @@ with open(csv_name, 'r') as input:
 
         cursor.execute(sql.insert_sql, (
             int(observation_no), 
-            date, 
+            clean_date(date), 
             point_name, 
             qualifier_text, 
             clean(risk_notes), 
