@@ -18,12 +18,8 @@ class fetcher:
 
     def filter_stop_words(text: str) -> str:
         lemmatizer = WordNetLemmatizer()
-
-        # Initialize stop words
         stop_words = set(stopwords.words('english'))
-        # Tokenize the text (split into words)
         tokens = text.split()
-        # Remove stop words
         filtered_tokens = [word for word in tokens if word.lower() not in stop_words]
         filtered_tokens = [lemmatizer.lemmatize(word) for word in tokens]
 

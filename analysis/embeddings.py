@@ -1,5 +1,4 @@
 from sentence_transformers import SentenceTransformer
-from transformers import AutoModel
 import faiss
 import os
 import sys
