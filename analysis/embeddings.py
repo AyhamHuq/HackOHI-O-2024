@@ -51,7 +51,10 @@ class embeddings:
                 
                 ds = [d.text for d in descriptions]
                 selected_ds = ds if n_descriptions == RUN_ALL else ds[:n_descriptions]
+                
+                x = time.time()
                 description_embeddings = model.encode(selected_ds)
+                print(time.time() - x)
 
                 for desc, emb in zip(descriptions, description_embeddings):
                     D, _ = index.search(emb.reshape(1, -1), k=1)
